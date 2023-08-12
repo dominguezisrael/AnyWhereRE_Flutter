@@ -4,7 +4,7 @@ This project contains the code exercise for job application with Any Where Real 
 
 Please clone project and use master branch.
 
-To launch the app in an emulator, use these commands:
+To launch the app in an emulator, use these commands in the terminal window in Android Studio:
 
 * For 'The Wire' tv show:
 flutter run --flavor thewireFlavor --dart-define=tv_show="the wire"
