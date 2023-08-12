@@ -1,6 +1,6 @@
 # anywherers_code_exercise
 
-This project contains the code exercise for job application with Any Where Real State.
+This project contains the code exercise for job application with Any Where Real Estate.
 
 Please clone project and use master branch.
 
