@@ -1,16 +1,15 @@
 # anywherers_code_exercise
 
-A new Flutter project.
+This project contains the code exercise for job application with Any Where Real State.
 
-## Getting Started
+Please clone project and use master branch.
 
-This project is a starting point for a Flutter application.
+To launch the app in an emulator, use these commands:
 
-A few resources to get you started if this is your first Flutter project:
+* For 'The Wire' tv show:
+flutter run --flavor thewireFlavor --dart-define=tv_show="the wire"
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* For 'Simpsons' tv show:
+flutter run --flavor simpsonsFlavor --dart-define=tv_show="simpsons"
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Executing these commands is required to pass the parameter for each flavor.
