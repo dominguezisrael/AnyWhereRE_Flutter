@@ -1,12 +1,20 @@
+import 'package:anywherers_code_exercise/app/app_config.dart';
+import 'package:anywherers_code_exercise/assets/constants.dart';
 import 'package:anywherers_code_exercise/model/CharacterModel.dart';
+import 'package:anywherers_code_exercise/view/CharacterDetailsWidget.dart';
 import 'package:anywherers_code_exercise/view/CharactersWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+class NavigatorObserverMock extends Mock implements NavigatorObserver {}
+
+class AppConfigHelperMock extends Mock implements AppConfigHelper {}
+
+class RouteFake extends Fake implements Route {}
 
 void main() {
   List<CharacterModel> characterList = [];
-  const expectedCharacter1Name = 'Alma Gutierrez';
-  const expectedCharacter2Name = 'Brother Mouzone';
 
   setUpAll(() {
     CharacterModel character1 = CharacterModel(
@@ -26,161 +34,206 @@ void main() {
     characterList = [character1, character2];
   });
 
-  testWidgets('A ListView widget is shown for the list of characters',
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
+  group("UI interactions test", () {
+    const expectedCharacter1Name = 'Alma Gutierrez';
+    const expectedCharacter2Name = 'Brother Mouzone';
 
-    expect(
-        widgetTester
-            .widget(find.byKey(CharactersWidget.characterListWidgetKey)),
-        isA<ListView>());
+    testWidgets('A ListView widget is shown for the list of characters',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      expect(
+          widgetTester
+              .widget(find.byKey(CharactersWidget.characterListWidgetKey)),
+          isA<ListView>());
+    });
+
+    testWidgets('A character container widget is shown for each character',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      expect(
+          widgetTester
+              .widgetList(find.byKey(CharactersWidget.characterContainer))
+              .length,
+          2);
+    });
+
+    testWidgets("A Text widget is shown with character's names",
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      expect(find.text(expectedCharacter1Name), findsOneWidget);
+      expect(find.text(expectedCharacter2Name), findsOneWidget);
+    });
+
+    testWidgets(
+        "No Image widget found to guarantee only displaying character's name",
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      expect(find.byType(Image).evaluate(), isEmpty);
+    });
+
+    testWidgets('Search icon is present', (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      Widget searchIconWidget =
+          widgetTester.widget(find.byKey(CharactersWidget.searchIconKey));
+      Finder widgetsFound =
+          find.widgetWithIcon(searchIconWidget.runtimeType, Icons.search);
+
+      expect(widgetsFound, findsOneWidget);
+    });
+
+    testWidgets('Search off icon is shown after taping on search icon',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
+      await widgetTester.pump();
+
+      expect(find.byKey(CharactersWidget.searchOffIconKey), findsOneWidget);
+    });
+
+    testWidgets('Search box is shown after taping on search icon',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
+      await widgetTester.pump();
+
+      expect(find.byKey(CharactersWidget.searchBoxWidgetKey), findsOneWidget);
+    });
+
+    testWidgets('Filter list of characters', (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
+      await widgetTester.pump();
+
+      await widgetTester.enterText(
+          find.byType(TextField), expectedCharacter1Name);
+      await widgetTester.pump();
+
+      Finder characterContainerFinder =
+          find.byKey(CharactersWidget.characterContainer);
+
+      expect(characterContainerFinder, findsOneWidget);
+
+      Widget characterContainerWidget =
+          widgetTester.widget(characterContainerFinder);
+      Finder widgetsFound = find.widgetWithText(
+          characterContainerWidget.runtimeType, expectedCharacter1Name);
+      expect(widgetsFound, findsOneWidget);
+    });
+
+    testWidgets('Search icon is shown after tapping search off icon',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      Finder searchIconWidgetFinder =
+          find.byKey(CharactersWidget.searchIconKey);
+
+      await widgetTester.tap(searchIconWidgetFinder);
+      await widgetTester.pump();
+
+      await widgetTester.tap(find.byKey(CharactersWidget.searchOffIconKey));
+      await widgetTester.pump();
+
+      expect(searchIconWidgetFinder, findsOneWidget);
+    });
+
+    testWidgets('Search box is hidden after tapping cancel search icon',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper(), null),
+        ),
+      ));
+
+      await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
+      await widgetTester.pump();
+
+      await widgetTester.tap(find.byKey(CharactersWidget.searchOffIconKey));
+      await widgetTester.pump();
+
+      expect(
+          find.byKey(CharactersWidget.searchBoxWidgetKey).evaluate(), isEmpty);
+    });
   });
 
-  testWidgets('A character container widget is shown for each character',
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
+  group("Navigation tests", () {
+    late NavigatorObserver navigatorObserverMock;
+    late AppConfigHelper appConfigHelperMock;
 
-    expect(
-        widgetTester
-            .widgetList(find.byKey(CharactersWidget.characterContainer))
-            .length,
-        2);
-  });
+    setUp(() {
+      navigatorObserverMock = NavigatorObserverMock();
+      appConfigHelperMock = AppConfigHelperMock();
 
-  testWidgets("A Text widget is shown with character's names",
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
+      registerFallbackValue(RouteFake());
+    });
 
-    expect(find.text(expectedCharacter1Name), findsOneWidget);
-    expect(find.text(expectedCharacter2Name), findsOneWidget);
-  });
+    testWidgets(
+        'Navigate from characters list to character details after tapping a character',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, appConfigHelperMock, null),
+        ),
+        navigatorObservers: [navigatorObserverMock],
+        routes: {
+          Routes.characterDetail.name: (context) =>
+              const CharacterDetailsWidget(null),
+        },
+      ));
 
-  testWidgets(
-      "No Image widget found to guarantee only displaying character's name",
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
+      when(() => appConfigHelperMock.isTablet()).thenReturn(false);
 
-    expect(find.byType(Image).evaluate(), isEmpty);
-  });
+      await widgetTester
+          .tap(find.byKey(CharactersWidget.characterNameContainer).first);
+      await widgetTester.pumpAndSettle();
 
-  testWidgets('Search icon is present', (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
+      verify(() => navigatorObserverMock.didPush(any<Route>(), null));
 
-    Widget searchIconWidget =
-        widgetTester.widget(find.byKey(CharactersWidget.searchIconKey));
-    Finder widgetsFound =
-        find.widgetWithIcon(searchIconWidget.runtimeType, Icons.search);
-
-    expect(widgetsFound, findsOneWidget);
-  });
-
-  testWidgets('Search off icon is shown after taping on search icon',
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
-
-    await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
-    await widgetTester.pump();
-
-    expect(find.byKey(CharactersWidget.searchOffIconKey), findsOneWidget);
-  });
-
-  testWidgets('Search box is shown after taping on search icon',
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
-
-    await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
-    await widgetTester.pump();
-
-    expect(find.byKey(CharactersWidget.searchBoxWidgetKey), findsOneWidget);
-  });
-
-  testWidgets('Filter list of characters', (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
-
-    await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
-    await widgetTester.pump();
-
-    await widgetTester.enterText(
-        find.byType(TextField), expectedCharacter1Name);
-    await widgetTester.pump();
-
-    Finder characterContainerFinder =
-        find.byKey(CharactersWidget.characterContainer);
-
-    expect(characterContainerFinder, findsOneWidget);
-
-    Widget characterContainerWidget =
-        widgetTester.widget(characterContainerFinder);
-    Finder widgetsFound = find.widgetWithText(
-        characterContainerWidget.runtimeType, expectedCharacter1Name);
-    expect(widgetsFound, findsOneWidget);
-  });
-
-  testWidgets('Search icon is shown after tapping search off icon',
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
-
-    Finder searchIconWidgetFinder = find.byKey(CharactersWidget.searchIconKey);
-
-    await widgetTester.tap(searchIconWidgetFinder);
-    await widgetTester.pump();
-
-    await widgetTester.tap(find.byKey(CharactersWidget.searchOffIconKey));
-    await widgetTester.pump();
-
-    expect(searchIconWidgetFinder, findsOneWidget);
-  });
-
-  testWidgets('Search box is hidden after tapping cancel search icon',
-      (widgetTester) async {
-    await widgetTester.pumpWidget(MaterialApp(
-      home: Material(
-        child: CharactersWidget(characterList, null),
-      ),
-    ));
-
-    await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
-    await widgetTester.pump();
-
-    await widgetTester.tap(find.byKey(CharactersWidget.searchOffIconKey));
-    await widgetTester.pump();
-
-    expect(find.byKey(CharactersWidget.searchBoxWidgetKey).evaluate(), isEmpty);
+      expect(find.byType(CharactersWidget), findsNothing);
+      expect(find.byType(CharacterDetailsWidget), findsOneWidget);
+    });
   });
 }

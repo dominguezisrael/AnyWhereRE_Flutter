@@ -9,14 +9,16 @@ typedef ItemSelectedCallback = void Function(CharacterModel selectedCharacter);
 class CharactersWidget extends StatefulWidget {
   static const Key characterListWidgetKey = Key("CharacterListWidgetKey");
   static const Key searchBoxWidgetKey = Key("SearchBoxWidgetKey");
-  static const Key characterContainer = Key("CharacterNameContainer");
+  static const Key characterContainer = Key("CharacterContainer");
+  static const Key characterNameContainer = Key("CharacterNameContainer");
   static const Key searchIconKey = Key("searchIconKey");
   static const Key searchOffIconKey = Key("searchOffIconKey");
   final List<CharacterModel> charactersModel;
   final ItemSelectedCallback? onItemSelected;
+  final AppConfigHelper appConfigHelper;
 
-  const CharactersWidget(this.charactersModel, this.onItemSelected,
-      {super.key});
+  const CharactersWidget(this.charactersModel, this.appConfigHelper,
+      this.onItemSelected, {super.key});
 
   @override
   State<CharactersWidget> createState() => _CharactersWidgetState();
@@ -27,6 +29,13 @@ class _CharactersWidgetState extends State<CharactersWidget> {
   List<CharacterModel> filteredCharacters = [];
   bool searchActive = false;
   TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    textEditingController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,11 +174,12 @@ class _CharactersWidgetState extends State<CharactersWidget> {
         key: CharactersWidget.characterContainer,
         elevation: 4.0,
         child: ListTile(
+          key: CharactersWidget.characterNameContainer,
           title: Text(
             characterModel.getName(),
           ),
           onTap: () {
-            if (AppConfig.isTablet()) {
+            if (widget.appConfigHelper.isTablet()) {
               widget.onItemSelected!(characterModel);
             } else {
               displayCharacterDetails(characterModel);

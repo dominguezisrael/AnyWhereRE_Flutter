@@ -15,12 +15,13 @@ void main() {
     MaterialApp(
       initialRoute: Routes.home.name,
       routes: {
-        Routes.home.name: (context) => const LoadingDataWidget(),
-        Routes.characters.name: (context) => const CharactersWidget([], null),
+        Routes.home.name: (context) => LoadingDataWidget(AppConfigHelper()),
+        Routes.characters.name: (context) =>
+            CharactersWidget(const [], AppConfigHelper(), null),
         Routes.characterDetail.name: (context) =>
             const CharacterDetailsWidget(null),
         Routes.charactersAndDetail.name: (context) =>
-            const CharactersAndDetailsWidget(),
+            CharactersAndDetailsWidget(AppConfigHelper()),
       },
       theme: ThemeData(
         primarySwatch: Colors.grey,

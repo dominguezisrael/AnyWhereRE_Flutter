@@ -7,7 +7,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../model/CharacterModel.dart';
 
 class LoadingDataWidget extends StatefulWidget {
-  const LoadingDataWidget({super.key});
+  final AppConfigHelper appConfigHelper;
+
+  const LoadingDataWidget(this.appConfigHelper, {super.key});
 
   @override
   State<LoadingDataWidget> createState() => _LoadingDataWidgetState();
@@ -70,7 +72,7 @@ class _LoadingDataWidgetState extends State<LoadingDataWidget> {
 
     if (!context.mounted) return;
 
-    if (AppConfig.isTablet()) {
+    if (widget.appConfigHelper.isTablet()) {
       Navigator.of(context).pushReplacementNamed(
           Routes.charactersAndDetail.name,
           arguments: {charactersListArgument: characterModels});

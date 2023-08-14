@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../app/app_config.dart';
 import '../assets/constants.dart';
 import '../model/CharacterModel.dart';
 import 'CharacterDetailsWidget.dart';
 import 'CharactersWidget.dart';
 
 class CharactersAndDetailsWidget extends StatefulWidget {
-  const CharactersAndDetailsWidget({super.key});
+  final AppConfigHelper appConfigHelper;
+
+  const CharactersAndDetailsWidget(this.appConfigHelper, {super.key});
 
   @override
   State<CharactersAndDetailsWidget> createState() =>
@@ -29,7 +32,7 @@ class _CharactersAndDetailsWidgetState
     return Row(
       children: [
         Expanded(
-          child: CharactersWidget(characters, (character) {
+          child: CharactersWidget(characters, widget.appConfigHelper, (character) {
             setState(() {
               selectedCharacter = character;
             });

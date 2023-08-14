@@ -30,7 +30,13 @@ class AppConfig {
     _isTablet ??= MediaQuery.of(context).size.width > 600;
   }
 
-  static bool isTablet() {
+  static bool _isTabletGetter() {
     return _isTablet!;
+  }
+}
+
+class AppConfigHelper {
+  bool isTablet() {
+    return AppConfig._isTabletGetter();
   }
 }
