@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'package:anywherers_code_exercise/model/CharacterModel.dart';
 import 'package:dio/dio.dart';
 
-import '../app/app_config.dart';
 import '../model/CharacterListModel.dart';
 
 class CharactersService {
   static const String domain = 'https://api.duckduckgo.com/';
 
-  static Future<List<CharacterModel>> requestTvShowCharacters() async {
+  static Future<List<CharacterModel>> requestTvShowCharacters(
+      String tvShowName) async {
     String requestErrorMessage =
         "An error occurred while retrieving characters";
 
     try {
-      Response response = await Dio().get(
-          "$domain?q=${AppConfig.tvShow?.name}&format=json");
+      Response response = await Dio().get("$domain?q=$tvShowName&format=json");
 
       if (response.statusCode == 200) {
         Map data = jsonDecode(response.data);

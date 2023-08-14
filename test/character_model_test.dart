@@ -59,10 +59,13 @@ void main() {
   });
 
   test('Character name is correctly extracted', () {
-    String name = 'Bart';
+    String name = 'Bodie Broadus';
 
     CharacterModel characterModel = CharacterModel(
-        Result: "", Text: "$name-...", Icon: CharacterIcon(URL: ''));
+        Result: "<a href=\"https://duckduckgo.com/Bodie_Broadus\">Bodie Broadus</a><br>Preston \"Bodie\" Broadus is a fictional character on the HBO drama series The Wire, played by actor J. D. Williams. Bodie is initially a rough, low-level drug dealer, but matures throughout the series and slowly rises through the ranks.",
+        Text:
+            "Bodie Broadus - Preston \"Bodie\" Broadus is a fictional character on the HBO drama series The Wire, played by actor J. D. Williams. Bodie is initially a rough, low-level drug dealer, but matures throughout the series and slowly rises through the ranks.",
+        Icon: CharacterIcon(URL: '/i/5675525f.jpg"'));
 
     expect(characterModel.getName(), equals(name));
   });

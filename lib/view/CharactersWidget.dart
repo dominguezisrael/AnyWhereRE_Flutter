@@ -7,6 +7,11 @@ import '../model/CharacterModel.dart';
 typedef ItemSelectedCallback = void Function(CharacterModel selectedCharacter);
 
 class CharactersWidget extends StatefulWidget {
+  static const Key characterListWidgetKey = Key("CharacterListWidgetKey");
+  static const Key searchBoxWidgetKey = Key("SearchBoxWidgetKey");
+  static const Key characterContainer = Key("CharacterNameContainer");
+  static const Key searchIconKey = Key("searchIconKey");
+  static const Key searchOffIconKey = Key("searchOffIconKey");
   final List<CharacterModel> charactersModel;
   final ItemSelectedCallback? onItemSelected;
 
@@ -58,6 +63,7 @@ class _CharactersWidgetState extends State<CharactersWidget> {
   Widget getSearchIcon() {
     if (searchActive) {
       return GestureDetector(
+        key: CharactersWidget.searchOffIconKey,
         onTap: () {
           setState(() {
             searchActive = false;
@@ -71,6 +77,7 @@ class _CharactersWidgetState extends State<CharactersWidget> {
       );
     } else {
       return GestureDetector(
+        key: CharactersWidget.searchIconKey,
         onTap: () {
           setState(() {
             searchActive = true;
@@ -95,6 +102,7 @@ class _CharactersWidgetState extends State<CharactersWidget> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              key: CharactersWidget.searchBoxWidgetKey,
               onChanged: (filter) {
                 filterCharacters(filter);
               },
@@ -139,6 +147,7 @@ class _CharactersWidgetState extends State<CharactersWidget> {
 
   Widget getListView() {
     return ListView.builder(
+      key: CharactersWidget.characterListWidgetKey,
       shrinkWrap: true,
       itemCount: filteredCharacters.length,
       itemBuilder: (context, index) {
@@ -153,6 +162,7 @@ class _CharactersWidgetState extends State<CharactersWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
       child: Card(
+        key: CharactersWidget.characterContainer,
         elevation: 4.0,
         child: ListTile(
           title: Text(

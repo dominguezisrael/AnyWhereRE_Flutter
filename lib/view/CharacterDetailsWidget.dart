@@ -2,6 +2,7 @@ import 'package:anywherers_code_exercise/assets/constants.dart';
 import 'package:anywherers_code_exercise/model/CharacterModel.dart';
 import 'package:flutter/material.dart';
 
+// TODO: Convert to Stateless?
 class CharacterDetailsWidget extends StatefulWidget {
   final CharacterModel? characterModel;
 
@@ -94,7 +95,17 @@ class _CharacterDetailsWidgetState extends State<CharacterDetailsWidget> {
 
   Widget getImageForCharacter(CharacterModel character) {
     return character.Icon.URL.isEmpty
-        ? Image.asset("assets/no_available_image_for_character_image.jpg")
-        : Image.network(character.Icon.getUrl());
+        ? getDefaultImage()
+        : Image.network(
+            character.Icon.getUrl(),
+            errorBuilder: (BuildContext context, Object exception,
+                StackTrace? stackTrace) {
+              return getDefaultImage();
+            },
+          );
+  }
+
+  Widget getDefaultImage() {
+    return Image.asset("assets/no_available_image_for_character_image.jpg");
   }
 }

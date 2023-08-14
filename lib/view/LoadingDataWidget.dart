@@ -58,7 +58,8 @@ class _LoadingDataWidgetState extends State<LoadingDataWidget> {
 
   void displayTvShowCharacters() async {
     try {
-      characterModels = await CharactersService.requestTvShowCharacters();
+      characterModels = await CharactersService.requestTvShowCharacters(
+          AppConfig.tvShow!.name);
     } catch (e) {
       setState(() {
         message = e.toString();
@@ -78,36 +79,4 @@ class _LoadingDataWidgetState extends State<LoadingDataWidget> {
           arguments: {charactersListArgument: characterModels});
     }
   }
-
-// Future<void> requestData() async {
-//   String requestErrorMessage =
-//       "An error occurred while retrieving characters";
-//
-//   try {
-//     Response response = await Dio().get(
-//         "https://api.duckaduckgo.com/?q=${AppConfig.tvShow?.name}&format=json");
-//
-//     if (response.statusCode == 200) {
-//       Map data = jsonDecode(response.data);
-//
-//       Map<String, dynamic> jsonData = {
-//         "RelatedTopics": data["RelatedTopics"]
-//       };
-//
-//       CharacterListModel characterModelList =
-//           CharacterListModel.fromJson(jsonData);
-//
-//       characterModels = characterModelList.RelatedTopics.map(
-//           (e) => CharacterModel.fromJson(e)).toList();
-//     } else {
-//       setState(() {
-//         message = requestErrorMessage;
-//       });
-//     }
-//   } catch (e) {
-//     setState(() {
-//       message = requestErrorMessage;
-//     });
-//   }
-// }
 }
