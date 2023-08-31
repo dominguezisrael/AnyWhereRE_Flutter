@@ -1,5 +1,6 @@
 import 'package:anywherers_code_exercise/app/app_config.dart';
 import 'package:anywherers_code_exercise/assets/constants.dart';
+import 'package:anywherers_code_exercise/view/CommonWidgets.dart';
 import 'package:flutter/material.dart';
 
 import '../model/CharacterModel.dart';
@@ -13,12 +14,13 @@ class CharactersWidget extends StatefulWidget {
   static const Key characterNameContainer = Key("CharacterNameContainer");
   static const Key searchIconKey = Key("searchIconKey");
   static const Key searchOffIconKey = Key("searchOffIconKey");
+  static const Key emptyViewWidgetKey = Key("emptyViewWidgetKey");
   final List<CharacterModel> charactersModel;
   final ItemSelectedCallback? onItemSelected;
   final AppConfigHelper appConfigHelper;
 
   const CharactersWidget(this.charactersModel, this.appConfigHelper,
-      this.onItemSelected, {super.key});
+      {this.onItemSelected, super.key});
 
   @override
   State<CharactersWidget> createState() => _CharactersWidgetState();
@@ -51,22 +53,24 @@ class _CharactersWidgetState extends State<CharactersWidget> {
       }
     }
 
-    if (filteredCharacters.isEmpty) {
+    if (filteredCharacters.isEmpty && !searchActive) {
       filteredCharacters = characters;
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Characters"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: getSearchIcon(),
-          ),
-        ],
-      ),
-      body: getBody(),
-    );
+        appBar: AppBar(
+          title: const Text("Characters"),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: getSearchIcon(),
+            ),
+          ],
+        ),
+        body: Container(
+          color: Colors.white,
+          child: getBody(),
+        ));
   }
 
   Widget getSearchIcon() {
@@ -127,13 +131,19 @@ class _CharactersWidgetState extends State<CharactersWidget> {
               ),
             ),
           ),
-          Expanded(
-            child: getListView(),
-          )
+          filteredCharacters.isEmpty
+              ? Expanded(
+                  key: CharactersWidget.emptyViewWidgetKey,
+                  child: getEmptyViewWidget(
+                      "No character match the specified criteria"),
+                )
+              : Expanded(
+                  child: getListViewWidget(),
+                ),
         ],
       );
     } else {
-      return getListView();
+      return getListViewWidget();
     }
   }
 
@@ -154,7 +164,7 @@ class _CharactersWidgetState extends State<CharactersWidget> {
     );
   }
 
-  Widget getListView() {
+  Widget getListViewWidget() {
     return ListView.builder(
       key: CharactersWidget.characterListWidgetKey,
       shrinkWrap: true,

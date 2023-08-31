@@ -17,9 +17,9 @@ void main() {
       routes: {
         Routes.home.name: (context) => LoadingDataWidget(AppConfigHelper()),
         Routes.characters.name: (context) =>
-            CharactersWidget(const [], AppConfigHelper(), null),
+            CharactersWidget(const [], AppConfigHelper()),
         Routes.characterDetail.name: (context) =>
-            const CharacterDetailsWidget(null),
+            const CharacterDetailsWidget(),
         Routes.charactersAndDetail.name: (context) =>
             CharactersAndDetailsWidget(AppConfigHelper()),
       },

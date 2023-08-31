@@ -42,7 +42,7 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -56,7 +56,7 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -71,7 +71,7 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -84,7 +84,7 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -94,7 +94,7 @@ void main() {
     testWidgets('Search icon is present', (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -110,7 +110,7 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -124,7 +124,7 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -134,10 +134,11 @@ void main() {
       expect(find.byKey(CharactersWidget.searchBoxWidgetKey), findsOneWidget);
     });
 
-    testWidgets('Filter list of characters', (widgetTester) async {
+    testWidgets('Filter list of characters with valid criteria',
+        (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -160,11 +161,31 @@ void main() {
       expect(widgetsFound, findsOneWidget);
     });
 
+    testWidgets('Filter list of characters with invalid criteria',
+        (widgetTester) async {
+      await widgetTester.pumpWidget(MaterialApp(
+        home: Material(
+          child: CharactersWidget(characterList, AppConfigHelper()),
+        ),
+      ));
+
+      await widgetTester.tap(find.byKey(CharactersWidget.searchIconKey));
+      await widgetTester.pump();
+
+      await widgetTester.enterText(
+          find.byType(TextField), "invalid filter criteria");
+      await widgetTester.pump();
+
+      Finder emptyViewFinder = find.byKey(CharactersWidget.emptyViewWidgetKey);
+
+      expect(emptyViewFinder, findsOneWidget);
+    });
+
     testWidgets('Search icon is shown after tapping search off icon',
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -184,7 +205,7 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, AppConfigHelper(), null),
+          child: CharactersWidget(characterList, AppConfigHelper()),
         ),
       ));
 
@@ -215,12 +236,12 @@ void main() {
         (widgetTester) async {
       await widgetTester.pumpWidget(MaterialApp(
         home: Material(
-          child: CharactersWidget(characterList, appConfigHelperMock, null),
+          child: CharactersWidget(characterList, appConfigHelperMock),
         ),
         navigatorObservers: [navigatorObserverMock],
         routes: {
           Routes.characterDetail.name: (context) =>
-              const CharacterDetailsWidget(null),
+              const CharacterDetailsWidget(),
         },
       ));
 

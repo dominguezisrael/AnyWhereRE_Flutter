@@ -1,3 +1,4 @@
+import 'package:anywherers_code_exercise/view/CommonWidgets.dart';
 import 'package:flutter/material.dart';
 
 import '../app/app_config.dart';
@@ -32,7 +33,8 @@ class _CharactersAndDetailsWidgetState
     return Row(
       children: [
         Expanded(
-          child: CharactersWidget(characters, widget.appConfigHelper, (character) {
+          child: CharactersWidget(characters, widget.appConfigHelper,
+              onItemSelected: (character) {
             setState(() {
               selectedCharacter = character;
             });
@@ -41,9 +43,14 @@ class _CharactersAndDetailsWidgetState
         selectedCharacter == null
             ? Expanded(
                 child: Container(
-                color: Colors.white,
-              ))
-            : Expanded(child: CharacterDetailsWidget(selectedCharacter)),
+                  color: Colors.white,
+                  child: getEmptyViewWidget(
+                      "Please choose a character from the list"),
+                ),
+              )
+            : Expanded(
+                child:
+                    CharacterDetailsWidget(characterModel: selectedCharacter)),
       ],
     );
   }
